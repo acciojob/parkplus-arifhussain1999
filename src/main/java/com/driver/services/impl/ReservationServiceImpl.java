@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ReservationServiceImpl implements ReservationService {
+public class ReservationServiceImpl implements ReservationService
+{
     @Autowired
     UserRepository userRepository3;
     @Autowired
@@ -26,14 +28,22 @@ public class ReservationServiceImpl implements ReservationService {
     ParkingLotRepository parkingLotRepository3;
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
-        ParkingLot parkingLot=parkingLotRepository3.findById(parkingLotId).get();
-        if(parkingLot==null){
+
+        Optional<User>optionalUser=userRepository3.findById(userId);
+
+        if(optionalUser.isEmpty()) throw new Exception("Cannot make reservation");
+
+        User user=optionalUser.get();
+
+        Optional<ParkingLot> optional=parkingLotRepository3.findById(parkingLotId);
+        if(optional.isEmpty()==false)
+        {
             throw new Exception("Cannot make reservation");
         }
-        User user=userRepository3.findById(userId).get();
-        if(user==null){
-            throw new Exception("Cannot make reservation");
-        }
+        ParkingLot parkingLot=optional.get();
+
+
+
         Spot requiredSpot=null;
         int finalHourPrice=Integer.MAX_VALUE;
         List<Spot> spotList=parkingLot.getSpotList();
@@ -53,7 +63,8 @@ public class ReservationServiceImpl implements ReservationService {
                 }
             }
         }
-        if(requiredSpot==null){
+        if(requiredSpot==null)
+        {
             throw new Exception("Cannot make reservation");
         }
 
