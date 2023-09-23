@@ -5,30 +5,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="spot")
 public class Spot {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Enumerated(EnumType.STRING)
     private SpotType spotType;
+
     private int pricePerHour;
-    private Boolean occupied;
+    private boolean occupied;
+
     @ManyToOne
     @JoinColumn
-    private ParkingLot parkingLot;
-    @OneToMany(mappedBy="spot",cascade =CascadeType.ALL)
-    List<Reservation> reservationList;
+    ParkingLot parkingLot;
+
+    @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
+    List<Reservation> reservationList=new ArrayList<>();
 
     public Spot() {
     }
 
-    public Spot(int id, SpotType spotType, int pricePerHour, Boolean occupied, ParkingLot parkingLot, List<Reservation> reservationList) {
+    public Spot(int id, SpotType spotType, int pricePerHour, boolean occupied,
+                ParkingLot parkingLot, List<Reservation> reservationList) {
         this.id = id;
         this.spotType = spotType;
         this.pricePerHour = pricePerHour;
         this.occupied = occupied;
         this.parkingLot = parkingLot;
-        this.reservationList = new ArrayList<>();
+        this.reservationList = reservationList;
     }
 
     public int getId() {
@@ -55,11 +60,11 @@ public class Spot {
         this.pricePerHour = pricePerHour;
     }
 
-    public Boolean getOccupied() {
+    public boolean getOccupied() {
         return occupied;
     }
 
-    public void setOccupied(Boolean occupied) {
+    public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
